@@ -6,6 +6,7 @@ import SignupPage from './pages/Auth/SignupPage';
 import LoginPage from './pages/Auth/LoginPage';
 import ProfilePage from './pages/Profile/ProfilePage';
 import HomePage from './components/Homepage/HomePage';
+import TrelloPage from './pages/TrelloPage/TrelloPage';
 import NavBar from './components/Navbar/NavBar';
 
 function App() {
@@ -21,6 +22,13 @@ function App() {
             <AuthContext.Consumer>
               {({ isAuthenticated }) => (
                 isAuthenticated ? <ProfilePage /> : <Navigate to="/login" />
+              )}
+            </AuthContext.Consumer>
+          } />
+          <Route path="/trello" element={
+            <AuthContext.Consumer>
+              {({ isAuthenticated }) => (
+                isAuthenticated ? <TrelloPage /> : <Navigate to="/login" />
               )}
             </AuthContext.Consumer>
           } />
