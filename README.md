@@ -1,3 +1,14 @@
+# TO DO
+
+Backend : READ for all the comments / Full CRUD for the rest of the comment feature.
+
+Frontend : Display all the comments on each cards.
+
+
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

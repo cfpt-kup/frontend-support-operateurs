@@ -10,6 +10,8 @@ const CardDetail = () => {
     const [card, setCard] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [comment, setComment] = useState('');
+    const [comments, setComments] = useState([]);
 
     useEffect(() => {
         const fetchCardDetails = async () => {
@@ -21,6 +23,7 @@ const CardDetail = () => {
                     },
                 });
                 setCard(response.data.data.card);
+                setComments(response.data.data.card.comments || []);
                 setLoading(false);
             } catch (err) {
                 setError(err.message || 'Failed to fetch card details');
@@ -32,6 +35,34 @@ const CardDetail = () => {
             fetchCardDetails();
         }
     }, [isAuthenticated, cardId]);
+
+    const handleCommentChange = (e) => {
+        setComment(e.target.value);
+    };
+
+    const handleCommentSubmit = async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+        try {
+            const response = await axios.post(`http://localhost:3000/api/trello/cards/comment`,
+                { cardId, text: comment },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            const newComment = {
+                author: response.data.data.comment.memberCreator.username,
+                text: response.data.data.comment.data.text,
+                date: response.data.data.comment.date,
+            };
+            setComments([...comments, newComment]);
+            setComment('');
+        } catch (err) {
+            setError(err.message || 'Failed to post comment');
+        }
+    };
 
     if (loading) {
         return <div>Loading...</div>;
@@ -59,9 +90,22 @@ const CardDetail = () => {
                 ))}
             </ul>
             <h3>Comments</h3>
-            <p>Comments: {card.badges.comments}</p>
-            <h3>Card Links</h3>
-            <a href={card.shortUrl} target="_blank" rel="noopener noreferrer">View on Trello</a>
+            <ul>
+                {comments.map((comment, index) => (
+                    <li key={index}>
+                        <p><strong>{comment.author}</strong> ({new Date(comment.date).toLocaleString()}): {comment.text}</p>
+                    </li>
+                ))}
+            </ul>
+            <form onSubmit={handleCommentSubmit}>
+                <textarea
+                    value={comment}
+                    onChange={handleCommentChange}
+                    placeholder="Add a comment"
+                    required
+                />
+                <button type="submit">Post Comment</button>
+            </form>
         </div>
     );
 };

@@ -1,8 +1,6 @@
 // Profile.js
-import React, { useEffect, useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { fetchProfile } from '../../api/auth';
-import { AuthContext } from '../../context/AuthContext';
 
 const Profile = () => {
     const [profile, setProfile] = useState({
@@ -13,8 +11,6 @@ const Profile = () => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const { logout } = useContext(AuthContext);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const getProfile = async () => {
@@ -31,11 +27,6 @@ const Profile = () => {
 
         getProfile();
     }, []);
-
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
 
     if (loading) {
         return <div>Loading...</div>;
@@ -56,7 +47,6 @@ const Profile = () => {
                     <p><strong>Invitation Code:</strong> {profile.code_used}</p>
                 </div>
             )}
-            <button onClick={handleLogout}>Logout</button>
         </div>
     );
 };
