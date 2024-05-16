@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+// Signup.js
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signup } from '../../api/auth';
+import { AuthContext } from '../../context/AuthContext';
 
 const Signup = () => {
     const [formData, setFormData] = useState({
@@ -12,6 +14,7 @@ const Signup = () => {
     });
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { login } = useContext(AuthContext);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -22,11 +25,31 @@ const Signup = () => {
         e.preventDefault();
         try {
             const response = await signup(formData);
-            console.log(response);
-            // Handle success (e.g., redirect to login or dashboard)
-            navigate('/login');
+            console.log('Signup response:', response);
+
+            if (response && response.data && response.data.user) {
+                const userData = response.data.user;
+                console.log('User data:', userData);
+
+                const token = userData.token;
+                console.log('Token:', token);
+
+                if (token) {
+                    login(token); // Set token and update authentication state
+                    console.log('Token stored in localStorage:', localStorage.getItem('token'));
+
+                    // Redirect to profile page
+                    navigate('/profile');
+                } else {
+                    setError('Failed to retrieve token from response');
+                }
+            } else {
+                console.log('No user data found. Response data:', response);
+                setError('No user data found in response');
+            }
         } catch (err) {
-            setError(err.response.data.message || 'Something went wrong');
+            console.error('Signup error:', err);
+            setError(err.response ? err.response.data.message : 'Something went wrong');
         }
     };
 

@@ -1,14 +1,28 @@
+// App.js
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import { AuthProvider, AuthContext } from './context/AuthContext';
 import SignupPage from './pages/Auth/SignupPage';
+import LoginPage from './pages/Auth/LoginPage';
+import ProfilePage from './pages/Profile/ProfilePage';
 
 function App() {
   return (
-    <div className="App">
-      <Routes>
-        <Route path="/signup" element={<SignupPage />} />
-      </Routes>
-    </div>
+    <AuthProvider>
+      <div className="App">
+        <Routes>
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/profile" element={
+            <AuthContext.Consumer>
+              {({ isAuthenticated }) => (
+                isAuthenticated ? <ProfilePage /> : <Navigate to="/login" />
+              )}
+            </AuthContext.Consumer>
+          } />
+        </Routes>
+      </div>
+    </AuthProvider>
   );
 }
 
