@@ -5,9 +5,10 @@ import { AuthProvider, AuthContext } from './context/AuthContext';
 import SignupPage from './pages/Auth/SignupPage';
 import LoginPage from './pages/Auth/LoginPage';
 import ProfilePage from './pages/Profile/ProfilePage';
-import HomePage from './components/Homepage/HomePage';
-import TrelloPage from './pages/TrelloPage/TrelloPage';
-import NavBar from './components/Navbar/NavBar';
+import HomePage from './components/Homepage/HomePage'; // Corrected import path
+import TrelloPage from './pages/TrelloPage/TrelloPage'; // Corrected import path
+import CardDetail from './pages/CardDetail/CardDetailPage'; // Corrected import path
+import NavBar from './components/Navbar/NavBar'; // Corrected import path
 
 function App() {
   return (
@@ -29,6 +30,13 @@ function App() {
             <AuthContext.Consumer>
               {({ isAuthenticated }) => (
                 isAuthenticated ? <TrelloPage /> : <Navigate to="/login" />
+              )}
+            </AuthContext.Consumer>
+          } />
+          <Route path="/cards/:cardId" element={
+            <AuthContext.Consumer>
+              {({ isAuthenticated }) => (
+                isAuthenticated ? <CardDetail /> : <Navigate to="/login" />
               )}
             </AuthContext.Consumer>
           } />
