@@ -5,11 +5,13 @@ import { AuthProvider, AuthContext } from './context/AuthContext';
 import SignupPage from './pages/Auth/SignupPage';
 import LoginPage from './pages/Auth/LoginPage';
 import ProfilePage from './pages/Profile/ProfilePage';
+import NavBar from './components/Navbar/NavBar';
 
 function App() {
   return (
     <AuthProvider>
       <div className="App">
+        <NavBar />
         <Routes>
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />

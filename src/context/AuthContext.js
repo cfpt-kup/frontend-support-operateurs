@@ -1,5 +1,6 @@
 // AuthContext.js
 import React, { createContext, useState, useEffect } from 'react';
+import { logoutApi } from '../api/auth'; // Adjust the import path according to your project structure
 
 export const AuthContext = createContext();
 
@@ -20,9 +21,15 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true);
     };
 
-    const logout = () => {
-        localStorage.removeItem('token');
-        setIsAuthenticated(false);
+    const logout = async () => {
+        try {
+            await logoutApi();
+        } catch (error) {
+            console.error('Failed to logout:', error);
+        } finally {
+            localStorage.removeItem('token');
+            setIsAuthenticated(false);
+        }
     };
 
     return (
