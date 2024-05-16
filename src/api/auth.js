@@ -1,5 +1,6 @@
 // auth.js
 import axios from 'axios';
+import { isTokenExpired } from '../utils/auth';
 
 const API_URL = 'http://localhost:3000/api'; // Adjust this URL according to your backend URL
 
@@ -15,7 +16,9 @@ export const signup = async (userData) => {
 
 export const fetchProfile = async () => {
     const token = localStorage.getItem('token');
-    if (!token) throw new Error('No token found in localStorage');
+    if (!token || isTokenExpired(token)) {
+        throw new Error('Token is expired or not found in localStorage');
+    }
 
     try {
         const response = await axios.get(`${API_URL}/profile`, {
