@@ -5,6 +5,7 @@ import { AuthProvider, AuthContext } from './context/AuthContext';
 import SignupPage from './pages/Auth/SignupPage';
 import LoginPage from './pages/Auth/LoginPage';
 import ProfilePage from './pages/Profile/ProfilePage';
+import HomePage from './components/Homepage/HomePage';
 import NavBar from './components/Navbar/NavBar';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
       <div className="App">
         <NavBar />
         <Routes>
+          <Route path="/" element={<HomePage />} /> {/* Set HomePage as the default route */}
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/profile" element={
