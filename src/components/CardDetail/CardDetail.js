@@ -13,10 +13,17 @@ const CardDetail = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [comments, setComments] = useState([]);
+    const [columns, setColumns] = useState([]);
 
     useEffect(() => {
         const fetchCardDetails = async () => {
             const token = localStorage.getItem('token');
+            if (!token) {
+                setError('No token found, please login again.');
+                setLoading(false);
+                return;
+            }
+
             try {
                 const response = await axios.get(`http://localhost:3000/api/trello/cards/${cardId}`, {
                     headers: {
@@ -31,9 +38,16 @@ const CardDetail = () => {
                     },
                 });
 
+                const columnsResponse = await axios.get(`http://localhost:3000/api/trello/columns/cards`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
                 const sortedComments = (commentsResponse.data.data.comments || []).sort((a, b) => new Date(b.date) - new Date(a.date));
                 setCard(cardData);
                 setComments(sortedComments);
+                setColumns(columnsResponse.data.data.columns);
                 setLoading(false);
             } catch (err) {
                 setError(err.message || 'Failed to fetch card details');
@@ -48,6 +62,11 @@ const CardDetail = () => {
 
     const addComment = async (text) => {
         const token = localStorage.getItem('token');
+        if (!token) {
+            setError('No token found, please login again.');
+            return;
+        }
+
         try {
             const response = await axios.post(`http://localhost:3000/api/trello/cards/comment`,
                 { cardId, text },
@@ -73,6 +92,11 @@ const CardDetail = () => {
 
     const updateComment = async (commentId, text) => {
         const token = localStorage.getItem('token');
+        if (!token) {
+            setError('No token found, please login again.');
+            return;
+        }
+
         try {
             const response = await axios.put(`http://localhost:3000/api/trello/cards/comments/${commentId}`,
                 { cardId, text },
@@ -98,6 +122,11 @@ const CardDetail = () => {
 
     const deleteComment = async (commentId) => {
         const token = localStorage.getItem('token');
+        if (!token) {
+            setError('No token found, please login again.');
+            return;
+        }
+
         try {
             await axios.delete(`http://localhost:3000/api/trello/cards/comments/${commentId}`, {
                 headers: {
@@ -107,6 +136,28 @@ const CardDetail = () => {
             setComments(comments.filter(comment => comment.id !== commentId));
         } catch (err) {
             setError(err.message || 'Failed to delete comment');
+        }
+    };
+
+    const moveCard = async (targetListId) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            setError('No token found, please login again.');
+            return;
+        }
+
+        try {
+            const response = await axios.post(`http://localhost:3000/api/trello/cards/move`,
+                { cardId, targetListId },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            setCard(response.data.data.card);
+        } catch (err) {
+            setError(err.message || 'Failed to move card');
         }
     };
 
@@ -138,6 +189,15 @@ const CardDetail = () => {
             <h3>Comments</h3>
             <CommentList comments={comments} onUpdate={updateComment} onDelete={deleteComment} />
             <CommentForm onSubmit={addComment} />
+            <h3>Move Card</h3>
+            {columns.map(column =>
+                (column.id !== card.idList &&
+                    (column.name === "A traiter - Opérateurs [TEST]" || column.name === "A valider - Opérateurs [TEST]")) && (
+                    <button key={column.id} onClick={() => moveCard(column.id)}>
+                        Move to {column.name}
+                    </button>
+                )
+            )}
         </div>
     );
 };
