@@ -8,7 +8,7 @@ import CommentForm from '../Comments/CommentForm';
 import ReactMarkdown from 'react-markdown';
 
 const CardDetail = () => {
-    const { isAuthenticated } = useContext(AuthContext);
+    const { isAuthenticated } = useContext(AuthContext); // Removed user from destructuring
     const { cardId } = useParams();
     const [card, setCard] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -177,6 +177,7 @@ const CardDetail = () => {
     return (
         <div className="p-6 bg-gray-100 min-h-screen">
             <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
+                <h3 className="text-xl font-semibold mb-2">Labels</h3>
                 <ul className="mb-4">
                     {card.labels.map(label => (
                         <li key={label.id} className="inline-block mr-2 mb-2 px-2 py-1 rounded" style={{ backgroundColor: label.color }}>
@@ -212,3 +213,4 @@ const CardDetail = () => {
 };
 
 export default CardDetail;
+

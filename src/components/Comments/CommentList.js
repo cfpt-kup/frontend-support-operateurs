@@ -55,7 +55,8 @@ const CommentList = ({ comments, onUpdate, onDelete }) => {
                     ) : (
                         <div className="flex flex-col space-y-2">
                             <p className="text-gray-700">
-                                <strong>{comment.memberCreator?.username || 'Unknown User'}</strong> ({new Date(comment.date).toLocaleString()}):
+                                <strong>{comment.memberCreator?.firstname || 'Unknown'} {comment.memberCreator?.lastname || 'User'}</strong>
+                                ({new Date(comment.date).toLocaleString()}):
                                 <span className="block mt-1">{comment.data?.text || comment.text}</span>
                             </p>
                             <div className="flex space-x-2">
@@ -81,3 +82,5 @@ const CommentList = ({ comments, onUpdate, onDelete }) => {
 };
 
 export default CommentList;
+
+
