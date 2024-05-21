@@ -1,7 +1,7 @@
 // CommentList.js
 import React, { useState } from 'react';
 
-const CommentList = ({ comments, onUpdate }) => {
+const CommentList = ({ comments, onUpdate, onDelete }) => {
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [updatedText, setUpdatedText] = useState('');
 
@@ -19,6 +19,10 @@ const CommentList = ({ comments, onUpdate }) => {
         onUpdate(commentId, updatedText);
         setEditingCommentId(null);
         setUpdatedText('');
+    };
+
+    const handleDeleteClick = (commentId) => {
+        onDelete(commentId);
     };
 
     return (
@@ -42,6 +46,7 @@ const CommentList = ({ comments, onUpdate }) => {
                                 {comment.data?.text || comment.text}
                             </p>
                             <button onClick={() => handleEditClick(comment)}>Update</button>
+                            <button onClick={() => handleDeleteClick(comment.id)}>Delete</button>
                         </div>
                     )}
                 </li>

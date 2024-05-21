@@ -96,6 +96,20 @@ const CardDetail = () => {
         }
     };
 
+    const deleteComment = async (commentId) => {
+        const token = localStorage.getItem('token');
+        try {
+            await axios.delete(`http://localhost:3000/api/trello/cards/comments/${commentId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setComments(comments.filter(comment => comment.id !== commentId));
+        } catch (err) {
+            setError(err.message || 'Failed to delete comment');
+        }
+    };
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -122,7 +136,7 @@ const CardDetail = () => {
                 ))}
             </ul>
             <h3>Comments</h3>
-            <CommentList comments={comments} onUpdate={updateComment} />
+            <CommentList comments={comments} onUpdate={updateComment} onDelete={deleteComment} />
             <CommentForm onSubmit={addComment} />
         </div>
     );
