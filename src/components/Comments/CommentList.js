@@ -26,27 +26,52 @@ const CommentList = ({ comments, onUpdate, onDelete }) => {
     };
 
     return (
-        <ul>
+        <ul className="space-y-4">
             {comments.map((comment, index) => (
-                <li key={index}>
+                <li key={index} className="bg-gray-100 p-4 rounded shadow-md">
                     {editingCommentId === comment.id ? (
-                        <div>
+                        <div className="flex flex-col space-y-2">
                             <textarea
                                 value={updatedText}
                                 onChange={(e) => setUpdatedText(e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-600"
+                                rows="4"
                             />
-                            <button onClick={() => handleUpdateClick(comment.id)}>Save</button>
-                            <button onClick={handleCancelClick}>Cancel</button>
+                            <div className="flex space-x-2">
+                                <button
+                                    onClick={() => handleUpdateClick(comment.id)}
+                                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                                >
+                                    Save
+                                </button>
+                                <button
+                                    onClick={handleCancelClick}
+                                    className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
                         </div>
                     ) : (
-                        <div>
-                            <p>
-                                <strong>{comment.memberCreator?.username || 'Unknown User'}</strong>
-                                ({new Date(comment.date).toLocaleString()}):
-                                {comment.data?.text || comment.text}
+                        <div className="flex flex-col space-y-2">
+                            <p className="text-gray-700">
+                                <strong>{comment.memberCreator?.username || 'Unknown User'}</strong> ({new Date(comment.date).toLocaleString()}):
+                                <span className="block mt-1">{comment.data?.text || comment.text}</span>
                             </p>
-                            <button onClick={() => handleEditClick(comment)}>Update</button>
-                            <button onClick={() => handleDeleteClick(comment.id)}>Delete</button>
+                            <div className="flex space-x-2">
+                                <button
+                                    onClick={() => handleEditClick(comment)}
+                                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                                >
+                                    Update
+                                </button>
+                                <button
+                                    onClick={() => handleDeleteClick(comment.id)}
+                                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600"
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </div>
                     )}
                 </li>

@@ -5,6 +5,7 @@ import { AuthContext } from '../../context/AuthContext';
 import axios from 'axios';
 import CommentList from '../Comments/CommentList';
 import CommentForm from '../Comments/CommentForm';
+import ReactMarkdown from 'react-markdown';
 
 const CardDetail = () => {
     const { isAuthenticated } = useContext(AuthContext);
@@ -162,42 +163,50 @@ const CardDetail = () => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="text-center mt-10 text-lg">Loading...</div>;
     }
 
     if (error) {
-        return <div>{error}</div>;
+        return <div className="text-center mt-10 text-red-500">{error}</div>;
     }
 
     if (!card) {
-        return <div>No card details available.</div>;
+        return <div className="text-center mt-10 text-lg">No card details available.</div>;
     }
 
     return (
-        <div>
-            <h1>Card Detail</h1>
-            <h2>{card.name}</h2>
-            <p>{card.desc}</p>
-            <h3>Labels</h3>
-            <ul>
-                {card.labels.map(label => (
-                    <li key={label.id} style={{ backgroundColor: label.color }}>
-                        {label.name}
-                    </li>
-                ))}
-            </ul>
-            <h3>Comments</h3>
-            <CommentList comments={comments} onUpdate={updateComment} onDelete={deleteComment} />
-            <CommentForm onSubmit={addComment} />
-            <h3>Move Card</h3>
-            {columns.map(column =>
-                (column.id !== card.idList &&
-                    (column.name === "A traiter - Opérateurs [TEST]" || column.name === "A valider - Opérateurs [TEST]")) && (
-                    <button key={column.id} onClick={() => moveCard(column.id)}>
-                        Move to {column.name}
-                    </button>
-                )
-            )}
+        <div className="p-6 bg-gray-100 min-h-screen">
+            <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
+                <ul className="mb-4">
+                    {card.labels.map(label => (
+                        <li key={label.id} className="inline-block mr-2 mb-2 px-2 py-1 rounded" style={{ backgroundColor: label.color }}>
+                            {label.name}
+                        </li>
+                    ))}
+                </ul>
+                <h1 className="text-3xl font-bold mb-4">{card.name}</h1>
+                <div className="mb-4 prose prose-sm sm:prose lg:prose-lg xl:prose-xl">
+                    <ReactMarkdown>{card.desc}</ReactMarkdown>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Comments</h3>
+                <CommentList comments={comments} onUpdate={updateComment} onDelete={deleteComment} />
+                <CommentForm onSubmit={addComment} />
+                <h3 className="text-xl font-semibold mb-2 mt-4">Move Card</h3>
+                <div className="flex flex-wrap">
+                    {columns.map(column =>
+                        (column.id !== card.idList &&
+                            (column.name === "A traiter - Opérateurs [TEST]" || column.name === "A valider - Opérateurs [TEST]")) && (
+                            <button
+                                key={column.id}
+                                onClick={() => moveCard(column.id)}
+                                className="bg-blue-600 text-white px-4 py-2 rounded mr-2 mb-2 hover:bg-blue-700"
+                            >
+                                Move to {column.name}
+                            </button>
+                        )
+                    )}
+                </div>
+            </div>
         </div>
     );
 };

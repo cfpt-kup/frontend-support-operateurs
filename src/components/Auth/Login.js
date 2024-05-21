@@ -21,7 +21,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:3000/api/login', formData); // Adjust the URL as needed
+            const response = await axios.post('http://localhost:3000/api/login', formData);
             console.log('Login response:', response);
 
             if (response && response.data && response.data.data && response.data.data.user) {
@@ -30,10 +30,8 @@ const Login = () => {
                 console.log('Token:', token);
 
                 if (token) {
-                    login(token); // Set token and update authentication state
+                    login(token);
                     console.log('Token stored in localStorage:', localStorage.getItem('token'));
-
-                    // Redirect to profile page
                     navigate('/profile');
                 } else {
                     setError('Failed to retrieve token from response');
@@ -49,26 +47,30 @@ const Login = () => {
     };
 
     return (
-        <div>
-            <h2>Login</h2>
-            {error && <p>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                />
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                />
-                <button type="submit">Login</button>
-            </form>
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+            <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+                <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+                {error && <p className="text-red-500 mb-4">{error}</p>}
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                    />
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                    />
+                    <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Login</button>
+                </form>
+            </div>
         </div>
     );
 };

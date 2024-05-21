@@ -10,7 +10,7 @@ const Signup = () => {
         lastname: '',
         email: '',
         password: '',
-        code_used: '', // Add this if your signup requires an invitation code
+        code_used: '',
     });
     const [error, setError] = useState('');
     const navigate = useNavigate();
@@ -35,10 +35,8 @@ const Signup = () => {
                 console.log('Token:', token);
 
                 if (token) {
-                    login(token); // Set token and update authentication state
+                    login(token);
                     console.log('Token stored in localStorage:', localStorage.getItem('token'));
-
-                    // Redirect to profile page
                     navigate('/profile');
                 } else {
                     setError('Failed to retrieve token from response');
@@ -54,47 +52,54 @@ const Signup = () => {
     };
 
     return (
-        <div>
-            <h2>Signup</h2>
-            {error && <p>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    name="firstname"
-                    placeholder="First Name"
-                    value={formData.firstname}
-                    onChange={handleChange}
-                />
-                <input
-                    type="text"
-                    name="lastname"
-                    placeholder="Last Name"
-                    value={formData.lastname}
-                    onChange={handleChange}
-                />
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                />
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                />
-                <input
-                    type="text"
-                    name="code_used"
-                    placeholder="Invitation Code"
-                    value={formData.code_used}
-                    onChange={handleChange}
-                />
-                <button type="submit">Signup</button>
-            </form>
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+            <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+                <h2 className="text-2xl font-bold mb-6 text-center">Signup</h2>
+                {error && <p className="text-red-500 mb-4">{error}</p>}
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <input
+                        type="text"
+                        name="firstname"
+                        placeholder="First Name"
+                        value={formData.firstname}
+                        onChange={handleChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                    />
+                    <input
+                        type="text"
+                        name="lastname"
+                        placeholder="Last Name"
+                        value={formData.lastname}
+                        onChange={handleChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                    />
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                    />
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                    />
+                    <input
+                        type="text"
+                        name="code_used"
+                        placeholder="Invitation Code"
+                        value={formData.code_used}
+                        onChange={handleChange}
+                        className="w-full p-2 border border-gray-300 rounded"
+                    />
+                    <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Signup</button>
+                </form>
+            </div>
         </div>
     );
 };

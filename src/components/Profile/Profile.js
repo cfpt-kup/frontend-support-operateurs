@@ -29,24 +29,26 @@ const Profile = () => {
     }, []);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="text-center mt-10 text-lg">Loading...</div>;
     }
 
     if (error) {
-        return <div>{error}</div>;
+        return <div className="text-center mt-10 text-red-500">{error}</div>;
     }
 
     return (
-        <div>
-            <h1>Profile Page</h1>
-            {profile && (
-                <div>
-                    <p><strong>First Name:</strong> {profile.firstname}</p>
-                    <p><strong>Last Name:</strong> {profile.lastname}</p>
-                    <p><strong>Email:</strong> {profile.email}</p>
-                    <p><strong>Invitation Code:</strong> {profile.code_used}</p>
-                </div>
-            )}
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+            <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+                <h1 className="text-2xl font-bold mb-6 text-center">Profile Page</h1>
+                {profile && (
+                    <div className="space-y-4">
+                        <p><strong className="text-gray-700">First Name:</strong> {profile.firstname}</p>
+                        <p><strong className="text-gray-700">Last Name:</strong> {profile.lastname}</p>
+                        <p><strong className="text-gray-700">Email:</strong> {profile.email}</p>
+                        <p><strong className="text-gray-700">Invitation Code:</strong> {profile.code_used}</p>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
