@@ -3,6 +3,8 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import axios from 'axios';
+import CommentList from '../Comments/CommentList';
+import CommentForm from '../Comments/CommentForm';
 
 const CardDetail = () => {
     const { isAuthenticated } = useContext(AuthContext);
@@ -10,7 +12,6 @@ const CardDetail = () => {
     const [card, setCard] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [comment, setComment] = useState('');
     const [comments, setComments] = useState([]);
 
     useEffect(() => {
@@ -22,8 +23,17 @@ const CardDetail = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                setCard(response.data.data.card);
-                setComments(response.data.data.card.comments || []);
+
+                const cardData = response.data.data.card;
+                const commentsResponse = await axios.get(`http://localhost:3000/api/trello/cards/${cardId}/comments`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                const sortedComments = (commentsResponse.data.data.comments || []).sort((a, b) => new Date(b.date) - new Date(a.date));
+                setCard(cardData);
+                setComments(sortedComments);
                 setLoading(false);
             } catch (err) {
                 setError(err.message || 'Failed to fetch card details');
@@ -36,16 +46,11 @@ const CardDetail = () => {
         }
     }, [isAuthenticated, cardId]);
 
-    const handleCommentChange = (e) => {
-        setComment(e.target.value);
-    };
-
-    const handleCommentSubmit = async (e) => {
-        e.preventDefault();
+    const addComment = async (text) => {
         const token = localStorage.getItem('token');
         try {
             const response = await axios.post(`http://localhost:3000/api/trello/cards/comment`,
-                { cardId, text: comment },
+                { cardId, text },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -53,12 +58,11 @@ const CardDetail = () => {
                 }
             );
             const newComment = {
-                author: response.data.data.comment.memberCreator.username,
+                memberCreator: response.data.data.comment.memberCreator,
                 text: response.data.data.comment.data.text,
                 date: response.data.data.comment.date,
             };
-            setComments([...comments, newComment]);
-            setComment('');
+            setComments([newComment, ...comments]);
         } catch (err) {
             setError(err.message || 'Failed to post comment');
         }
@@ -90,22 +94,8 @@ const CardDetail = () => {
                 ))}
             </ul>
             <h3>Comments</h3>
-            <ul>
-                {comments.map((comment, index) => (
-                    <li key={index}>
-                        <p><strong>{comment.author}</strong> ({new Date(comment.date).toLocaleString()}): {comment.text}</p>
-                    </li>
-                ))}
-            </ul>
-            <form onSubmit={handleCommentSubmit}>
-                <textarea
-                    value={comment}
-                    onChange={handleCommentChange}
-                    placeholder="Add a comment"
-                    required
-                />
-                <button type="submit">Post Comment</button>
-            </form>
+            <CommentList comments={comments} />
+            <CommentForm onSubmit={addComment} />
         </div>
     );
 };
