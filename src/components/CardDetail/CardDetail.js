@@ -58,13 +58,41 @@ const CardDetail = () => {
                 }
             );
             const newComment = {
+                id: response.data.data.comment.id,
                 memberCreator: response.data.data.comment.memberCreator,
-                text: response.data.data.comment.data.text,
+                data: {
+                    text: response.data.data.comment.data.text
+                },
                 date: response.data.data.comment.date,
             };
             setComments([newComment, ...comments]);
         } catch (err) {
             setError(err.message || 'Failed to post comment');
+        }
+    };
+
+    const updateComment = async (commentId, text) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await axios.put(`http://localhost:3000/api/trello/cards/comments/${commentId}`,
+                { cardId, text },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            const updatedComment = {
+                id: response.data.data.comment.id,
+                data: {
+                    text: response.data.data.comment.data.text
+                },
+                date: response.data.data.comment.date,
+                memberCreator: response.data.data.comment.memberCreator
+            };
+            setComments(comments.map(comment => comment.id === commentId ? updatedComment : comment));
+        } catch (err) {
+            setError(err.message || 'Failed to update comment');
         }
     };
 
@@ -94,7 +122,7 @@ const CardDetail = () => {
                 ))}
             </ul>
             <h3>Comments</h3>
-            <CommentList comments={comments} />
+            <CommentList comments={comments} onUpdate={updateComment} />
             <CommentForm onSubmit={addComment} />
         </div>
     );
