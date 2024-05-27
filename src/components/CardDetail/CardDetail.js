@@ -1,4 +1,3 @@
-// CardDetail.js
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
@@ -8,7 +7,7 @@ import CommentForm from '../Comments/CommentForm';
 import ReactMarkdown from 'react-markdown';
 
 const CardDetail = () => {
-    const { isAuthenticated } = useContext(AuthContext); // Removed user from destructuring
+    const { isAuthenticated } = useContext(AuthContext);
     const { cardId } = useParams();
     const [card, setCard] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -26,20 +25,20 @@ const CardDetail = () => {
             }
 
             try {
-                const response = await axios.get(`http://localhost:3000/api/trello/cards/${cardId}`, {
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/trello/cards/${cardId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
 
                 const cardData = response.data.data.card;
-                const commentsResponse = await axios.get(`http://localhost:3000/api/trello/cards/${cardId}/comments`, {
+                const commentsResponse = await axios.get(`${process.env.REACT_APP_API_URL}/trello/cards/${cardId}/comments`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
 
-                const columnsResponse = await axios.get(`http://localhost:3000/api/trello/columns/cards`, {
+                const columnsResponse = await axios.get(`${process.env.REACT_APP_API_URL}/trello/columns/cards`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -69,7 +68,7 @@ const CardDetail = () => {
         }
 
         try {
-            const response = await axios.post(`http://localhost:3000/api/trello/cards/comment`,
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/trello/cards/comment`,
                 { cardId, text },
                 {
                     headers: {
@@ -99,7 +98,7 @@ const CardDetail = () => {
         }
 
         try {
-            const response = await axios.put(`http://localhost:3000/api/trello/cards/comments/${commentId}`,
+            const response = await axios.put(`${process.env.REACT_APP_API_URL}/trello/cards/comments/${commentId}`,
                 { cardId, text },
                 {
                     headers: {
@@ -129,7 +128,7 @@ const CardDetail = () => {
         }
 
         try {
-            await axios.delete(`http://localhost:3000/api/trello/cards/comments/${commentId}`, {
+            await axios.delete(`${process.env.REACT_APP_API_URL}/trello/cards/comments/${commentId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -148,7 +147,7 @@ const CardDetail = () => {
         }
 
         try {
-            const response = await axios.post(`http://localhost:3000/api/trello/cards/move`,
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/trello/cards/move`,
                 { cardId, targetListId },
                 {
                     headers: {
@@ -213,4 +212,3 @@ const CardDetail = () => {
 };
 
 export default CardDetail;
-

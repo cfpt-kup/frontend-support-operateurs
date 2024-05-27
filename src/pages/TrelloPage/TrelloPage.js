@@ -1,4 +1,3 @@
-// TrelloPage.js
 import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
@@ -14,7 +13,7 @@ const TrelloPage = () => {
         const fetchData = async () => {
             const token = localStorage.getItem('token');
             try {
-                const response = await axios.get('http://localhost:3000/api/trello/columns/cards', {
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/trello/columns/cards`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

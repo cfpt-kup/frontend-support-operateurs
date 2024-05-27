@@ -1,8 +1,7 @@
-// auth.js
 import axios from 'axios';
 import { isTokenExpired } from '../utils/auth';
 
-const API_URL = 'http://localhost:3000/api'; // Adjust this URL according to your backend URL
+const API_URL = process.env.REACT_APP_API_URL;
 
 export const signup = async (userData) => {
     try {
@@ -26,8 +25,8 @@ export const fetchProfile = async () => {
                 Authorization: `Bearer ${token}`
             }
         });
-        console.log(response.data); // Log the actual API response
-        return response.data; // Ensure this returns the correct profile object
+        console.log(response.data);
+        return response.data;
     } catch (error) {
         console.error('Fetch profile error:', error);
         throw error;

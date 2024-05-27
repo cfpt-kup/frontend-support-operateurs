@@ -1,4 +1,3 @@
-// Login.js
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -21,7 +20,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:3000/api/login', formData);
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, formData);
             console.log('Login response:', response);
 
             if (response && response.data && response.data.data && response.data.data.user) {
