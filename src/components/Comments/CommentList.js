@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Swal from 'sweetalert2';
 
 const CommentList = ({ comments, onUpdate, onDelete }) => {
     const [editingCommentId, setEditingCommentId] = useState(null);
@@ -15,13 +16,47 @@ const CommentList = ({ comments, onUpdate, onDelete }) => {
     };
 
     const handleUpdateClick = (commentId) => {
-        onUpdate(commentId, updatedText);
-        setEditingCommentId(null);
-        setUpdatedText('');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to save the changes?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, save it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                onUpdate(commentId, updatedText);
+                setEditingCommentId(null);
+                setUpdatedText('');
+                Swal.fire(
+                    'Saved!',
+                    'Your comment has been updated.',
+                    'success'
+                );
+            }
+        });
     };
 
     const handleDeleteClick = (commentId) => {
-        onDelete(commentId);
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to delete this comment?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                onDelete(commentId);
+                Swal.fire(
+                    'Deleted!',
+                    'Your comment has been deleted.',
+                    'success'
+                );
+            }
+        });
     };
 
     return (
