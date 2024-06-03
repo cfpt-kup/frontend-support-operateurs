@@ -5,6 +5,7 @@ import axios from 'axios';
 import CommentList from '../Comments/CommentList';
 import CommentForm from '../Comments/CommentForm';
 import ReactMarkdown from 'react-markdown';
+import Swal from 'sweetalert2';
 
 const CardDetail = () => {
     const { isAuthenticated } = useContext(AuthContext);
@@ -140,25 +141,42 @@ const CardDetail = () => {
     };
 
     const moveCard = async (targetListId) => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            setError('No token found, please login again.');
-            return;
-        }
-
-        try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/trello/cards/move`,
-                { cardId, targetListId },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to move this card?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, move it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    setError('No token found, please login again.');
+                    return;
                 }
-            );
-            setCard(response.data.data.card);
-        } catch (err) {
-            setError(err.message || 'Failed to move card');
-        }
+
+                try {
+                    const response = await axios.post(`${process.env.REACT_APP_API_URL}/trello/cards/move`,
+                        { cardId, targetListId },
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
+                    setCard(response.data.data.card);
+                    Swal.fire(
+                        'Moved!',
+                        'Your card has been moved.',
+                        'success'
+                    );
+                } catch (err) {
+                    setError(err.message || 'Failed to move card');
+                }
+            }
+        });
     };
 
     if (loading) {

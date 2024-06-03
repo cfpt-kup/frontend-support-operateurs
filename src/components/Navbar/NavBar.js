@@ -1,13 +1,30 @@
-// NavBar.js
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import Swal from 'sweetalert2';
 
 const NavBar = () => {
     const { isAuthenticated, logout } = useContext(AuthContext);
 
     const handleLogout = () => {
-        logout();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to log out?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, log out!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                logout();
+                Swal.fire(
+                    'Logged out!',
+                    'You have been logged out.',
+                    'success'
+                );
+            }
+        });
     };
 
     return (
